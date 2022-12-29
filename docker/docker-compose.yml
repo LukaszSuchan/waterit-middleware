@@ -1,0 +1,18 @@
+version: '3'
+services:
+
+  database:
+    image: postgres:latest
+    container_name: waterit-postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=waterit_admin
+      - POSTGRES_PASSWORD=Zaq123@!
+      - POSTGRES_DB=waterit
+    volumes:
+      - waterit-postgres-volume:/var/lib/postgresql/data/
+    ports:
+      - "5435:5432"
+
+volumes:
+  plantit-postgres-volume:

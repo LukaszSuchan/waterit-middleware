@@ -1,0 +1,10 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /plantit/api
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5435/plantit
+    username: plantit_admin
+    password: Zaq123@!
