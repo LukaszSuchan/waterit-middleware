@@ -1,10 +1,27 @@
 server:
   port: 8080
   servlet:
-    context-path: /plantit/api
+    context-path: /waterit/api
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5435/plantit
-    username: plantit_admin
+    url: jdbc:postgresql://localhost:5430/waterit
+    username: waterit_admin
     password: Zaq123@!
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+        dialect: org.hibernate.dialect.PostgreSQL95Dialect
+        format_sql: true
+  liquibase:
+    change-log: classpath:db/db.changelog-master.xml
+#    url: jdbc:postgresql://localhost:5430/waterit
+#    user: waterit_admin
+#    password: Zaq123@!
+    enabled: false

@@ -8,7 +8,7 @@ import java.util.Base64;
 
 public class CryptoUtils {
     private static final String ALGORITHM = "AES";
-    private static final byte[] KEY = "mysecretkey12345".getBytes();
+    private static final byte[] KEY = "wateritkey123456".getBytes();
 
     public static String encrypt(String value) throws Exception {
         Key key = new SecretKeySpec(KEY, ALGORITHM);

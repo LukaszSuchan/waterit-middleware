@@ -12,7 +12,7 @@ services:
     volumes:
       - waterit-postgres-volume:/var/lib/postgresql/data/
     ports:
-      - "5435:5432"
+      - "5430:5432"
 
 volumes:
-  plantit-postgres-volume:
+  waterit-postgres-volume:
