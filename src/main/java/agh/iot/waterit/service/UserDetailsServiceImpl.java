@@ -1,6 +1,6 @@
 package agh.iot.waterit.service;
 
-import agh.iot.waterit.model.jpa.Account;
+import agh.iot.waterit.model.dto.AccountDto;
 import agh.iot.waterit.utils.exception.CoreException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,16 +24,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = accountService.getUserByEmail(username);
-        if(account.getRoles().isEmpty() || account.getRoles() == null) {
+        AccountDto accountDto = accountService.getUserByEmail(username);
+        if (accountDto.roles().isEmpty() || accountDto.roles() == null) {
             throw new CoreException(INTERNAL_ERROR, ROLE_NOT_FOUND);
         }
 
-        List<SimpleGrantedAuthority> authorities = account.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
+        List<SimpleGrantedAuthority> authorities = accountDto.roles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.name()))
                 .toList();
 
-        return new User(account.getEmail(), account.getPassword(), account.isEnabled(), !account.isExpired(),
-                !account.isCredentialsExpired(), !account.isLocked(), authorities);
+        return new User(accountDto.email(), accountDto.password(), accountDto.enabled(), !accountDto.expired(),
+                !accountDto.credentialsExpired(), !accountDto.locked(), authorities);
     }
 }

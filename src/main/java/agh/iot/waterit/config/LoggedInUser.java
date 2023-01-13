@@ -1,11 +1,9 @@
 package agh.iot.waterit.config;
 
 import agh.iot.waterit.model.dao.AccountRepository;
-import agh.iot.waterit.model.jpa.Account;
+import agh.iot.waterit.model.dto.AccountDto;
+import agh.iot.waterit.model.mapper.ModelMapper;
 import agh.iot.waterit.utils.exception.CoreException;
-import agh.iot.waterit.utils.exception.ErrorCode;
-import agh.iot.waterit.utils.exception.ErrorSubcode;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -18,11 +16,14 @@ import static agh.iot.waterit.utils.exception.ErrorSubcode.ACCOUNT_NOT_FOUND;
 public class LoggedInUser {
 
     private final AccountRepository accountRepository;
+    private final ModelMapper modelMapper;
 
-    public Account getAccountInfo() {
+    public AccountDto getAccountInfo() {
         final var username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return accountRepository.findByEmail(username).orElseThrow(
-                () -> new CoreException(NOT_FOUND, ACCOUNT_NOT_FOUND)
-        );
+        return accountRepository.findByEmail(username)
+                .map(modelMapper::toDto)
+                .orElseThrow(
+                        () -> new CoreException(NOT_FOUND, ACCOUNT_NOT_FOUND)
+                );
     }
 }

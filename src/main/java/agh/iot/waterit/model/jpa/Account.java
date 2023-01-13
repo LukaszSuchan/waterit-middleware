@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -39,5 +40,9 @@ public class Account {
             inverseJoinColumns = @JoinColumn(name = "roleId", referencedColumnName = "id")
     )
     private Set<Role> roles;
-
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    List<Device> devices;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "wifi_settings_id", referencedColumnName = "id")
+    WifiSettings wifiSettings;
 }

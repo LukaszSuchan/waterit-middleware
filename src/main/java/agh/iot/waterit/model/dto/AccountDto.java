@@ -1,11 +1,18 @@
 package agh.iot.waterit.model.dto;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.NonNull;
+import java.util.List;
+import java.util.Set;
 
 public record AccountDto(
-        @NotNull String email,
-        @NotNull String password,
-        @NotNull String name
+        Long id,
+        String email,
+        String password,
+        String name,
+        Set<RoleDto> roles,
+        boolean enabled,
+        boolean expired,
+        boolean credentialsExpired,
+        boolean locked,
+        List<DeviceDto> devices
 ) {
 }
