@@ -1,26 +1,41 @@
 package agh.iot.waterit.model.jpa;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "wifi_settings")
 public class WifiSettings {
 
     @Id
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "wifi_settings_id_seq"
+    )
+    @SequenceGenerator(
+            name = "wifi_settings_id_seq",
+            sequenceName = "wifi_settings_id_sequence",
+            allocationSize = 1
+    )
+    @Column(
+            name = "id",
+            unique = true,
+            updatable = false,
+            nullable = false
+    )
     Long id;
     private String ssid;
     private String wifiPassword;
     private String serverIp;
-    @OneToOne(mappedBy = "wifiSettings")
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 }

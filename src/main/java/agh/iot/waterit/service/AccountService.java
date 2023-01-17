@@ -3,6 +3,7 @@ package agh.iot.waterit.service;
 import agh.iot.waterit.config.LoggedInUser;
 import agh.iot.waterit.model.dao.AccountRepository;
 import agh.iot.waterit.model.dao.RoleRepository;
+import agh.iot.waterit.model.dao.WifiSettingsRepository;
 import agh.iot.waterit.model.dto.AccountDto;
 import agh.iot.waterit.model.dto.WifiSettingsDto;
 import agh.iot.waterit.model.jpa.Account;
@@ -26,6 +27,7 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
+    private final WifiSettingsRepository wifiSettingsRepository;
     private final ModelMapper modelMapper;
     private final LoggedInUser loggedInUser;
 
@@ -63,12 +65,17 @@ public class AccountService {
         if (settings == null) {
             settings = new WifiSettings();
         }
-        settings.setSsid(request.ssid());
-        settings.setWifiPassword(request.wifiPassword());
-        settings.setServerIp(request.serverIp());
-
+        if (request.ssid() != null && !request.ssid().equals("")) {
+            settings.setSsid(request.ssid());
+        }
+        if (request.wifiPassword() != null && !request.wifiPassword().equals("")) {
+            settings.setWifiPassword(request.wifiPassword());
+        }
+        if (request.serverIp() != null && !request.serverIp().equals("")) {
+            settings.setServerIp(request.serverIp());
+        }
+        settings.setAccount(account);
         account.setWifiSettings(settings);
-
         accountRepository.save(account);
     }
 

@@ -2,18 +2,16 @@ package agh.iot.waterit.model.jpa;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 import java.util.Set;
 
 @Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Builder
 @Table(name = "account")
 public class Account {
@@ -40,9 +38,8 @@ public class Account {
             inverseJoinColumns = @JoinColumn(name = "roleId", referencedColumnName = "id")
     )
     private Set<Role> roles;
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
-    List<Device> devices;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "wifi_settings_id", referencedColumnName = "id")
-    WifiSettings wifiSettings;
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    private List<Device> devices;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "account")
+    private WifiSettings wifiSettings;
 }

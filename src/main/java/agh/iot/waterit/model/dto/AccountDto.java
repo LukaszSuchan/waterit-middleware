@@ -13,6 +13,7 @@ public record AccountDto(
         boolean expired,
         boolean credentialsExpired,
         boolean locked,
-        List<DeviceDto> devices
+        List<DeviceDto> devices,
+        WifiSettingsDto settingsDto
 ) {
 }

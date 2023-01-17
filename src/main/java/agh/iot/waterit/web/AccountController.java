@@ -31,13 +31,13 @@ public class AccountController {
         return ResponseEntity.ok(loggedInUser.getAccountInfo());
     }
 
-    @PostMapping
-    public ResponseEntity<Void> updateWifiSettings(WifiSettingsDto request) {
+    @PostMapping("settings")
+    public ResponseEntity<Void> updateWifiSettings(@RequestBody WifiSettingsDto request) {
         accountService.updateWifiCredentials(request);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping
+    @GetMapping("settings")
     public ResponseEntity<WifiSettingsDto> getWifiSettings() {
         return ResponseEntity.ok(accountService.getWifiSettings());
     }
