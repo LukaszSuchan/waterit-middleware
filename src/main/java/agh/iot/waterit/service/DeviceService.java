@@ -8,6 +8,8 @@ import agh.iot.waterit.utils.exception.CoreException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static agh.iot.waterit.utils.exception.ErrorCode.NOT_FOUND;
 import static agh.iot.waterit.utils.exception.ErrorSubcode.DEVICE_NOT_FOUND;
 
@@ -27,6 +29,14 @@ public class DeviceService {
                 );
     }
 
+    public List<DeviceDto> getAllUserActiveDevices() {
+        var devices = loggedInUser.getAccountInfo().devices();
+        var activeDevices = devices.stream()
+                .filter(DeviceDto::active)
+                .toList();
+        return activeDevices;
+    }
+
     public Long addDevice(DeviceDto request) {
         final var device = modelMapper.toJpa(request);
         device.setAccountId(loggedInUser.getAccountInfo().id());
@@ -35,5 +45,21 @@ public class DeviceService {
 
     public void deleteDevice(Long id) {
         deviceRepository.deleteById(id);
+    }
+
+    public void activateDevice(String name) {
+        final var device = deviceRepository.findAllByName(name).stream().findFirst().orElseThrow(
+                () -> new CoreException(NOT_FOUND, DEVICE_NOT_FOUND)
+        );
+        device.setActive(true);
+        deviceRepository.save(device);
+    }
+
+    public DeviceDto getDeviceByName(String name) {
+        return deviceRepository.findByName(name)
+                .map(modelMapper::toDto)
+                .orElseThrow(
+                        () -> new CoreException(NOT_FOUND, DEVICE_NOT_FOUND)
+                );
     }
 }

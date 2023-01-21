@@ -1,13 +1,7 @@
 package agh.iot.waterit.model.mapper;
 
-import agh.iot.waterit.model.dto.AccountDto;
-import agh.iot.waterit.model.dto.DeviceDto;
-import agh.iot.waterit.model.dto.RoleDto;
-import agh.iot.waterit.model.dto.WifiSettingsDto;
-import agh.iot.waterit.model.jpa.Account;
-import agh.iot.waterit.model.jpa.Device;
-import agh.iot.waterit.model.jpa.Role;
-import agh.iot.waterit.model.jpa.WifiSettings;
+import agh.iot.waterit.model.dto.*;
+import agh.iot.waterit.model.jpa.*;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
@@ -29,5 +23,7 @@ public interface ModelMapper {
 
     WifiSettings toJpa(WifiSettingsDto wifiSettingsDto);
 
+    DataDto toDto(Data data);
 
+    Data toJpa(DataDto dataDto);
 }
