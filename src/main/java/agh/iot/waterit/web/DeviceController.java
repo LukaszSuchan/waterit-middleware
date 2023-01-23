@@ -1,17 +1,24 @@
 package agh.iot.waterit.web;
 
 import agh.iot.waterit.config.LoggedInUser;
+import agh.iot.waterit.model.dao.ConfirmationRepository;
 import agh.iot.waterit.model.dto.DataDto;
 import agh.iot.waterit.model.dto.DeviceDto;
 import agh.iot.waterit.model.dto.request.AddHistoryDataRequest;
+import agh.iot.waterit.model.jpa.Confirmation;
 import agh.iot.waterit.service.DataService;
 import agh.iot.waterit.service.DeviceService;
 import agh.iot.waterit.utils.UriBuilder;
+import agh.iot.waterit.utils.exception.CoreException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static agh.iot.waterit.utils.exception.ErrorCode.NOT_FOUND;
+import static agh.iot.waterit.utils.exception.ErrorSubcode.CONFIRMATION_NOT_FOUND;
+import static agh.iot.waterit.utils.exception.ErrorSubcode.DEVICE_NOT_FOUND;
 
 @CrossOrigin
 @RestController
@@ -23,6 +30,7 @@ public class DeviceController {
     private final DeviceService deviceService;
     private final UriBuilder uriBuilder = new UriBuilder();
     private final DataService dataService;
+    private final ConfirmationRepository confirmationRepository;
 
     @GetMapping()
     public List<DeviceDto> getAllLoggedInUserDevices() {
@@ -47,6 +55,12 @@ public class DeviceController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("esp/{name}")
+    public ResponseEntity<Void> deleteDeviceByName(@PathVariable String name) {
+        deviceService.deleteDeviceByName(name);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("activate")
     public ResponseEntity<Void> activateDevice(@RequestParam String name) {
         deviceService.activateDevice(name);
@@ -62,6 +76,29 @@ public class DeviceController {
     @GetMapping("{id}/history")
     public ResponseEntity<List<DataDto>> getAllDeviceData(@PathVariable Long id) {
         return ResponseEntity.ok(dataService.getAllDeviceData(id));
+    }
+
+    @PostMapping("esp/{name}/confirm")
+    public ResponseEntity<Void> confirm(@PathVariable String name) {
+        confirmationRepository.save(Confirmation.builder().name(name).build());
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("esp/{name}/confirm")
+    public ResponseEntity<Confirmation> getConfirmation(@PathVariable String name) {
+        final var confirmation = confirmationRepository.findByName(name).orElseThrow(
+                () -> new CoreException(NOT_FOUND, CONFIRMATION_NOT_FOUND)
+        );
+        return ResponseEntity.ok(confirmation);
+    }
+
+    @DeleteMapping("esp/{name}/confirm")
+    public ResponseEntity<Void> deleteConfirmation(@PathVariable String name) {
+        final var confirmation = confirmationRepository.findByName(name).orElseThrow(
+                () -> new CoreException(NOT_FOUND, CONFIRMATION_NOT_FOUND)
+        );
+        confirmationRepository.deleteById(confirmation.getId());
+        return ResponseEntity.noContent().build();
     }
 
 }

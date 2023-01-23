@@ -47,6 +47,13 @@ public class DeviceService {
         deviceRepository.deleteById(id);
     }
 
+    public void deleteDeviceByName(String name) {
+        final var device =deviceRepository.findByName(name).orElseThrow(
+                () -> new CoreException(NOT_FOUND, DEVICE_NOT_FOUND)
+        );
+        deviceRepository.deleteById(device.getId());
+    }
+
     public void activateDevice(String name) {
         final var device = deviceRepository.findAllByName(name).stream().findFirst().orElseThrow(
                 () -> new CoreException(NOT_FOUND, DEVICE_NOT_FOUND)

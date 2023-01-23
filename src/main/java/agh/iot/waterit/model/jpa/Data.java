@@ -23,7 +23,7 @@ public class Data {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "device_id", nullable = false, insertable = false, updatable = false)
     private Device device;
     @Column(name = "device_id")

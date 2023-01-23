@@ -41,6 +41,7 @@ public class AccountService {
                 .password(encryptedPassword)
                 .name(request.name())
                 .roles(roles)
+                .enabled(true)
                 .build();
         var savedAccount = accountRepository.save(account);
 

@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.*;
 import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -31,6 +31,12 @@ public class SecurityConfig {
                 .requestMatchers(POST, "/account/**")
                 .permitAll()
                 .requestMatchers(POST, "/device/history/**")
+                .permitAll()
+                .requestMatchers(DELETE, "/device/esp/**")
+                .permitAll()
+                .requestMatchers(POST, "/device/esp/**")
+                .permitAll()
+                .requestMatchers(GET, "/device/esp/**")
                 .permitAll()
                 .requestMatchers("/**")
                 .authenticated()
