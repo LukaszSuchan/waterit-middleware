@@ -6,6 +6,7 @@ import agh.iot.waterit.model.dao.DeviceRepository;
 import agh.iot.waterit.model.dto.DataDto;
 import agh.iot.waterit.model.dto.DeviceDto;
 import agh.iot.waterit.model.dto.request.AddHistoryDataRequest;
+import agh.iot.waterit.model.dto.response.ExternalDataResponse;
 import agh.iot.waterit.model.jpa.Confirmation;
 import agh.iot.waterit.service.DataService;
 import agh.iot.waterit.service.DeviceService;
@@ -15,6 +16,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static agh.iot.waterit.utils.exception.ErrorCode.NOT_FOUND;
@@ -80,23 +83,38 @@ public class DeviceController {
         return ResponseEntity.ok(dataService.getAllDeviceData(id));
     }
 
+    @GetMapping("{name}/history/external-temperature")
+    public ResponseEntity<ExternalDataResponse> getAllDeviceData(@PathVariable String name) {
+        return ResponseEntity.ok(dataService.getLatestExternalDataResponse(name));
+    }
+
     @PostMapping("esp/{name}/confirm")
     public ResponseEntity<Void> confirm(@PathVariable String name) {
-        confirmationRepository.save(Confirmation.builder().name(name).build());
+        final var c = Calendar.getInstance();
+        final var now = new Date();
+        c.setTime(now);
+        c.add(Calendar.MINUTE, 3);
+        Date validDate = c.getTime();
+        confirmationRepository.save(Confirmation.builder().name(name).validDate(validDate).build());
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("esp/{name}/confirm")
     public ResponseEntity<Confirmation> getConfirmation(@PathVariable String name) {
-        final var confirmation = confirmationRepository.findByName(name).orElseThrow(
+        final var confirmation = confirmationRepository.findFirstByNameOrderById(name).orElseThrow(
                 () -> new CoreException(NOT_FOUND, CONFIRMATION_NOT_FOUND)
         );
-        return ResponseEntity.ok(confirmation);
+        if(confirmation.getValidDate().after(new Date())) {
+            return ResponseEntity.ok(confirmation);
+        } else {
+            confirmationRepository.delete(confirmation);
+            throw new CoreException(NOT_FOUND, CONFIRMATION_NOT_FOUND);
+        }
     }
 
     @DeleteMapping("esp/{name}/confirm")
     public ResponseEntity<Void> deleteConfirmation(@PathVariable String name) {
-        final var confirmation = confirmationRepository.findByName(name).orElseThrow(
+        final var confirmation = confirmationRepository.findFirstByNameOrderById(name).orElseThrow(
                 () -> new CoreException(NOT_FOUND, CONFIRMATION_NOT_FOUND)
         );
         confirmationRepository.deleteById(confirmation.getId());

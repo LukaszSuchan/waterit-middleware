@@ -20,6 +20,7 @@ public class Data {
     BigDecimal temperature;
     BigDecimal humidity;
     BigDecimal moistureHumidity;
+    BigDecimal externalTemperature;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

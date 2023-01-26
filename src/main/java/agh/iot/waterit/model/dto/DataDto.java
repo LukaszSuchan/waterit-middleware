@@ -8,6 +8,7 @@ public record DataDto(
         BigDecimal temperature,
         BigDecimal humidity,
         BigDecimal moistureHumidity,
-        Date dateOfMeasurement
+        Date dateOfMeasurement,
+        BigDecimal externalTemperature
 ) {
 }

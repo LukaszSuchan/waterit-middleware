@@ -7,6 +7,7 @@ import java.util.List;
 public record AddHistoryDataRequest(
         String name,
         int interval,
-        List<DataDto> data
+        List<DataDto> data,
+        String externalTemperature
 ) {
 }

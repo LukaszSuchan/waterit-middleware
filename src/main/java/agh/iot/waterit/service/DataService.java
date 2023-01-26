@@ -4,6 +4,7 @@ import agh.iot.waterit.model.dao.DataRepository;
 import agh.iot.waterit.model.dao.DeviceRepository;
 import agh.iot.waterit.model.dto.DataDto;
 import agh.iot.waterit.model.dto.request.AddHistoryDataRequest;
+import agh.iot.waterit.model.dto.response.ExternalDataResponse;
 import agh.iot.waterit.model.jpa.Data;
 import agh.iot.waterit.model.mapper.ModelMapper;
 import agh.iot.waterit.utils.exception.CoreException;
@@ -51,6 +52,11 @@ public class DataService {
             data.setHumidity(data.getHumidity().divide(BigDecimal.valueOf(100)));
             data.setLightIntensity(data.getLightIntensity().divide(BigDecimal.valueOf(100)));
             data.setMoistureHumidity(data.getMoistureHumidity().divide(BigDecimal.valueOf(100)));
+            if(request.externalTemperature().startsWith("0")) {
+                data.setExternalTemperature(BigDecimal.valueOf(24.5));
+            } else {
+                data.setExternalTemperature(BigDecimal.valueOf(Double.parseDouble(request.externalTemperature().length() == 3 ? request.externalTemperature() : request.externalTemperature().substring(0, 3))).divide(BigDecimal.TEN));
+            }
             c.setTime(dateOfMeasurement);
             c.add(Calendar.SECOND, interval);
             dateOfMeasurement = c.getTime();
@@ -60,6 +66,12 @@ public class DataService {
 
         dataRepository.saveAll(dataList);
 
+    }
+
+    public ExternalDataResponse getLatestExternalDataResponse(String name) {
+        final var device = deviceRepository.findFirstByNameOrderById(name);
+        final var data = dataRepository.findFirstByDeviceIdOrderByDateOfMeasurementDesc(device.getId());
+        return new ExternalDataResponse(data.getExternalTemperature());
     }
 
     public List<DataDto> getAllDeviceData(Long id) {

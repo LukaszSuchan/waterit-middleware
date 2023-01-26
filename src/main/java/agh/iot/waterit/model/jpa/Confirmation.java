@@ -3,6 +3,8 @@ package agh.iot.waterit.model.jpa;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
+
 @Entity
 @Getter
 @Setter
@@ -15,4 +17,5 @@ public class Confirmation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     String name;
+    Date validDate;
 }
