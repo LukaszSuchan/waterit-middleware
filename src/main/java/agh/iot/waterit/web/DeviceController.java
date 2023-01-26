@@ -2,6 +2,7 @@ package agh.iot.waterit.web;
 
 import agh.iot.waterit.config.LoggedInUser;
 import agh.iot.waterit.model.dao.ConfirmationRepository;
+import agh.iot.waterit.model.dao.DeviceRepository;
 import agh.iot.waterit.model.dto.DataDto;
 import agh.iot.waterit.model.dto.DeviceDto;
 import agh.iot.waterit.model.dto.request.AddHistoryDataRequest;
@@ -31,6 +32,7 @@ public class DeviceController {
     private final UriBuilder uriBuilder = new UriBuilder();
     private final DataService dataService;
     private final ConfirmationRepository confirmationRepository;
+    private final DeviceRepository deviceRepository;
 
     @GetMapping()
     public List<DeviceDto> getAllLoggedInUserDevices() {

@@ -32,14 +32,21 @@ public class DeviceService {
     public List<DeviceDto> getAllUserActiveDevices() {
         var devices = loggedInUser.getAccountInfo().devices();
         var activeDevices = devices.stream()
-                .filter(DeviceDto::active)
                 .toList();
         return activeDevices;
     }
 
     public Long addDevice(DeviceDto request) {
+        var deviceOpt = deviceRepository.findByName(request.name());
+        if(deviceOpt.isPresent()) {
+            var usedDevice = deviceOpt.get();
+            usedDevice.setName(request.name() + "-UNUSED");
+            usedDevice.setActive(false);
+            deviceRepository.save(usedDevice);
+        }
         final var device = modelMapper.toJpa(request);
         device.setAccountId(loggedInUser.getAccountInfo().id());
+        device.setActive(true);
         return deviceRepository.save(device).getId();
     }
 
